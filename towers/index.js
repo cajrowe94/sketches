@@ -6,54 +6,77 @@ function setup() {
     // let canvasWidth = windowWidth - 100;
     // let canvasHeight = windowHeight - 100;
 
-    let canvasWidth = 500;
+    let canvasWidth = 800;
     let canvasHeight = windowHeight - 100;
 
     createCanvas(canvasWidth, canvasHeight);
 
-    let x = Math.floor(random(70, 100));
+    /**
+     * ------------------
+     * Border
+     * ------------------
+     */
+
+    strokeWeight(1);
+    stroke(0);
+    rect(100, 150, canvasWidth - 200, canvasHeight - 300);
+
+    /**
+     * ------------------
+     * Void
+     * ------------------
+     */
+
+    const width = random(400, 600);
+    const radius = width / 2;
+    fill(0);
+    stroke(0);
+    rect(120, 170, canvasWidth - 240, canvasHeight - 340)
+    // ellipse(random(radius, canvasWidth - radius), random(radius, canvasHeight - radius), width, width);
+
+    /**
+     * ------------------
+     * Background texture
+     * ------------------
+     */
+
+
+    /**
+     * ------------------
+     * Build towers
+     * ------------------
+     */
+
+    let xStart = Math.floor(random(200, 250));
     let heightMax = 200;
     let heightMin = 100;
-    let floor = 220;
+    let floor = 300;
 
-    let rows = 30;
-
-    // strokeWeight(5);
-    // rect(canvasWidth * 0.25, 100, canvasWidth * 0.75, canvasHeight * 0.5);
+    let rows = 45;
 
     for (let index = 0; index < rows; index++) {
-        while (x <= canvasWidth - 100) {
+        while (xStart <= canvasWidth - 250) {
             height = Math.floor(random(heightMin, heightMax));
-            let startY = floor - height;
+            let yStart = floor - height - 50;
 
-            new Tower(x, startY, height).draw();
+            new Tower(xStart, yStart, height).draw();
 
-            x += Math.floor(random(70, 100));   
+            xStart += Math.floor(random(50, 350));
+
+            // if (index % 2 == 0) {
+                const width = random(2, 8);
+                const radius = width / 2;
+                fill(yStart * 0.4);
+                // noStroke();
+                ellipse(xStart * 0.7, floor, width, width);
+            // }
         }
 
-        x = Math.floor(random(50, 300));
+        xStart = Math.floor(random(300, 350));
         floor += 15;
-        heightMax -= 20;
+        heightMax -= 10;
         heightMin -= 5;
     }
-
-    // while (floor < 1000 - floor) {
-    //     height = Math.floor(random(heightMin, heightMax));
-    //     let startY = floor - height + y;
-
-    //     new Tower(x, startY, height).draw();
-
-    //     x += Math.floor(random(70, 100));
-
-    //     if (x >= 950) {
-    //         x = Math.floor(random(70, 100));
-    //         floor += 50;
-    //         heightMax -= 20;
-    //         heightMin -= 10;
-    //     }      
-    // }
-
-    // frameRate(5);
 }
 
 function draw() {
@@ -72,12 +95,13 @@ class Tower {
     }
 
     draw() {
-        stroke(40);
-        strokeWeight(3);
+        fill(255);
+        stroke(100);
+        strokeWeight(1);
         this.drawTop();
         this.drawSides();
 
-        stroke(60);
+        stroke(0);
         strokeWeight(1);
         this.drawShading();
     }
@@ -132,6 +156,14 @@ class Tower {
 
         quad(...leftCoordinates);
 
+        // windows
+        // for (let index = 0; index < 3; index++) {
+        //     let x = random(this.#leftSideCoordinates[6], this.#leftSideCoordinates[0]);
+        //     let y = random(this.#leftSideCoordinates[3], this.#leftSideCoordinates[7]);
+        //     rect(x, y, 10, 15);
+        // }
+
+
         // Right side
 
         let rightCoordinates = [];
@@ -158,7 +190,7 @@ class Tower {
         let shadeDensity = Math.abs(this.height) * 0.7;
         // on right side
         for (let index = 0; index < shadeDensity; index++) {
-            let width = Math.floor(random(1, 15));
+            let width = Math.floor(random(1, 20));
             let y1 = Math.floor(random(this.#topCoordinates[1], this.#leftSideCoordinates[1]));
             let x2 = this.#topCoordinates[0] + width;
 
@@ -167,7 +199,7 @@ class Tower {
 
         // on left side
         for (let index = 0; index < shadeDensity; index++) {
-            let width = Math.floor(random(1, 30));
+            let width = Math.floor(random(1, 20));
             let y1 = Math.floor(random(this.#topCoordinates[1], this.#leftSideCoordinates[1]));
             let x2 = this.#topCoordinates[0] - width;
 
