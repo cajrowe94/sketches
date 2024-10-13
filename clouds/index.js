@@ -33,19 +33,56 @@ class Cloud {
     }
 
     render() {
-        this.buildCloudFrame(false);
+        this.buildCloudFrame(true);
         this.drawBaseLayer();
     }
 
     drawBaseLayer() {
-        this.#pivotPointCoords.forEach(point => {
-            // noFill();
+        const steps = 5;
+        let end = false;
+
+        this.#pivotPointCoords.forEach((point, i) => {
+            noFill();
+
+            let nextPoint = this.#pivotPointCoords[i + 1];
+
+            if (nextPoint) {
+                const arcWidth = Math.ceil(dist(...point, ...nextPoint) / steps);
+
+                console.log(arcWidth);
+
+
+                const stepX = (nextPoint[0] - point[0]) / steps;
+                const stepY = (nextPoint[1] - point[1]) / steps;
+
+                let nextX = point[0];
+                let nextY = point[1];
+
+                for (let i = 0; i < steps; i++) {
+                    const arcCenterX = nextX + (stepX / 2);
+                    const arcCenterY = nextY + (stepY / 2);
+
+                    arc(arcCenterX, arcCenterY, arcWidth, arcWidth, PI, TWO_PI);
+
+                    // arc(nextX, nextY, 20, 20, random(1, PI), TWO_PI);
+
+                    nextX += stepX;
+                    nextY += stepY;
+                }
+
+            }
+
+            // if (i == this.#pivotPointCoords.length - 1) {
+            //     nextPoint = false;
+            // }
+
+            
 
             // chunk
-            let chunkSpread = [10, 50];
-            arc(point[0], point[1], 50, 50, random(1, PI), TWO_PI);
-            arc(point[0] - random(...chunkSpread), point[1] - random(...chunkSpread), 50, 50, random(1, PI), TWO_PI);
-            arc(point[0] + random(...chunkSpread), point[1] + random(...chunkSpread), 50, 50, random(1, PI), TWO_PI);
+            // let chunkSpread = [10, 50];
+            // arc(point[0], point[1], 50, 50, random(1, PI), TWO_PI);
+            // arc(point[0] - random(...chunkSpread), point[1] - random(...chunkSpread), 50, 50, random(1, PI), TWO_PI);
+            // arc(point[0] + random(...chunkSpread), point[1] + random(...chunkSpread), 50, 50, random(1, PI), TWO_PI);
 
             // sprinkles
 
