@@ -49,26 +49,30 @@ class Cloud {
             if (nextPoint) {
                 const arcWidth = Math.ceil(dist(...point, ...nextPoint) / steps);
 
-                console.log(arcWidth);
-
-
                 const stepX = (nextPoint[0] - point[0]) / steps;
                 const stepY = (nextPoint[1] - point[1]) / steps;
 
                 let nextX = point[0];
                 let nextY = point[1];
 
+                let prevRadian = PI;
+                let nextRadian = this.calculateRadians(point[0], point[1], nextPoint[0], nextPoint[1]);
+
                 for (let i = 0; i < steps; i++) {
                     const arcCenterX = nextX + (stepX / 2);
                     const arcCenterY = nextY + (stepY / 2);
 
-                    arc(arcCenterX, arcCenterY, arcWidth, arcWidth, PI, TWO_PI);
+                    arc(arcCenterX, arcCenterY, arcWidth, arcWidth, nextRadian + PI, nextRadian);
+
+                    // prevRadian = nextRadian;
 
                     // arc(nextX, nextY, 20, 20, random(1, PI), TWO_PI);
 
                     nextX += stepX;
                     nextY += stepY;
                 }
+
+                prevRadian = PI;
 
             }
 
@@ -135,6 +139,12 @@ class Cloud {
         if (showFrame) {
             line(this.#xStart, this.#yStart, this.#xEnd, this.#yEnd);
         }
+    }
+
+    calculateRadians(x1, y1, x2, y2) {
+        const deltaX = x2 - x1;
+        const deltaY = y2 - y1;
+        return Math.atan2(deltaY, deltaX);
     }
 }
 
