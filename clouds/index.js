@@ -5,7 +5,7 @@
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    new Cloud(300, 1300, 500, 500, 10, 0.2).render();
+    new Cloud(300, 800, 500, 500, 20, 0.1).render();
 }
 
 class Cloud {
@@ -33,16 +33,18 @@ class Cloud {
     }
 
     render() {
-        this.buildCloudFrame(true);
+        this.buildCloudFrame();
         this.drawBaseLayer();
     }
 
     drawBaseLayer() {
-        const steps = 5;
-        let end = false;
+        const steps = random(1, 3);
 
         this.#pivotPointCoords.forEach((point, i) => {
-            noFill();
+            // noFill();
+            // fill(random(250, 255));
+            // stroke(random(0, 20));
+            // strokeWeight(random(0.2, 1));
 
             let nextPoint = this.#pivotPointCoords[i + 1];
 
@@ -64,32 +66,12 @@ class Cloud {
 
                     arc(arcCenterX, arcCenterY, arcWidth, arcWidth, nextRadian + PI, nextRadian);
 
-                    // prevRadian = nextRadian;
-
-                    // arc(nextX, nextY, 20, 20, random(1, PI), TWO_PI);
-
                     nextX += stepX;
                     nextY += stepY;
                 }
 
                 prevRadian = PI;
-
             }
-
-            // if (i == this.#pivotPointCoords.length - 1) {
-            //     nextPoint = false;
-            // }
-
-            
-
-            // chunk
-            // let chunkSpread = [10, 50];
-            // arc(point[0], point[1], 50, 50, random(1, PI), TWO_PI);
-            // arc(point[0] - random(...chunkSpread), point[1] - random(...chunkSpread), 50, 50, random(1, PI), TWO_PI);
-            // arc(point[0] + random(...chunkSpread), point[1] + random(...chunkSpread), 50, 50, random(1, PI), TWO_PI);
-
-            // sprinkles
-
         });
     }
 
@@ -97,6 +79,9 @@ class Cloud {
         const noiseLevel = 1000 * this.#pivotExtreme;
         const noiseScale = 0.02;
         const cloudWidth = this.#xEnd - this.#xStart;
+
+        const topPivotPoints = [];
+        const bottomPivotPoints = [];
 
         const drawCloudEdge = dir => {
             let nextX = this.#xStart;
@@ -120,10 +105,14 @@ class Cloud {
                     line(nextX, nextY, x, y);
                 }
 
-                
                 nextX = i;
                 nextY = y;
-                this.#pivotPointCoords.push([nextX, nextY]);
+
+                if (dir == 'top') {
+                    topPivotPoints.push([nextX, nextY]);
+                } else {
+                    bottomPivotPoints.unshift([nextX, nextY]);
+                }
             }
             
             if (showFrame) {
@@ -132,8 +121,19 @@ class Cloud {
             }
         }
 
+        // top
         drawCloudEdge('top');
+        // add cloud start and end coords into top pivot points
+        topPivotPoints.unshift([this.#xStart, this.#yStart]);
+        topPivotPoints.push([this.#xEnd, this.#yEnd]);
+        
+        // bottom
         drawCloudEdge();
+        // add cloud start into bottom pivots points
+        bottomPivotPoints.push([this.#xStart, this.#yStart]);
+
+        // combine into working pivot points for drawing
+        this.#pivotPointCoords = topPivotPoints.concat(bottomPivotPoints);
 
         // cloud center base line
         if (showFrame) {
