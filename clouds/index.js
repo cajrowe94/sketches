@@ -5,7 +5,7 @@
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    new Cloud(300, 800, 500, 500, 20, 0.1).render();
+    new Cloud(150, 750, 500, 500, 10, 0.2).render();
 }
 
 class Cloud {
@@ -38,7 +38,7 @@ class Cloud {
     }
 
     drawBaseLayer() {
-        const steps = random(1, 3);
+        const steps = random(1, 5);
 
         this.#pivotPointCoords.forEach((point, i) => {
             // noFill();
@@ -54,20 +54,39 @@ class Cloud {
                 const stepX = (nextPoint[0] - point[0]) / steps;
                 const stepY = (nextPoint[1] - point[1]) / steps;
 
-                let nextX = point[0];
-                let nextY = point[1];
+                let startX = point[0];
+                let startY = point[1];
 
                 let prevRadian = PI;
                 let nextRadian = this.calculateRadians(point[0], point[1], nextPoint[0], nextPoint[1]);
 
                 for (let i = 0; i < steps; i++) {
-                    const arcCenterX = nextX + (stepX / 2);
-                    const arcCenterY = nextY + (stepY / 2);
+                    const arcCenterX = startX + (stepX / 2);
+                    const arcCenterY = startY + (stepY / 2);
 
+                    // curve(
+                    //     startX,
+                    //     startY,
+                    //     startX + random(10, 50),
+                    //     startY - random(10, 50),
+                    //     (startX + stepX) - random(10, 50),
+                    //     (startY + stepY) - random(10, 50),
+                    //     startX + stepX,
+                    //     startY + stepY,
+                    // );
+
+                    // circle(arcCenterX, arcCenterY, arcWidth);
+
+                    // main arc
                     arc(arcCenterX, arcCenterY, arcWidth, arcWidth, nextRadian + PI, nextRadian);
+                    
+                    // draw some accent arcs
+                    // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
+                    // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
+                    // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
 
-                    nextX += stepX;
-                    nextY += stepY;
+                    startX += stepX;
+                    startY += stepY;
                 }
 
                 prevRadian = PI;
