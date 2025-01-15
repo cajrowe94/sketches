@@ -33,8 +33,9 @@ class Cloud {
     }
 
     render() {
-        this.buildCloudFrame();
-        this.drawBaseLayer();
+        // this.buildCloudFrame();
+        // this.drawBaseLayer();
+        this.decorateSegment(...[windowWidth / 2, windowHeight / 2], ...[windowWidth / 2 + 500, windowHeight / 2]);
     }
 
     drawBaseLayer() {
@@ -92,6 +93,53 @@ class Cloud {
                 prevRadian = PI;
             }
         });
+    }
+
+    decorateSegment(x1, y1, x2, y2) {
+        const bumps = 10;
+
+        line(x1, y1, x2, y2);
+
+        this.decoratePoint(x1, y1);
+        this.decoratePoint(x2, y2);
+
+        for (let i = 0; i < bumps; i++) {
+            const xQuarter = (x2 - x1) / 4;
+            const yQuarter = (y2 - y1) / 4;
+
+            const anchorX1 = random(x1, x1 + xQuarter);
+            const anchorY1 = random(y1, y1 + yQuarter);
+            const anchorX2 = random(x2 - xQuarter, x2);
+            const anchorY2 = random(y2 - yQuarter, y2);
+
+            const controlX1 = anchorX1 + random(10, 200);
+            const controlY1 = anchorY1 + random(10, 200);
+            const controlX2 = anchorX2 + random(10, 200);
+            const controlY2 = anchorY2 + random(10, 200);
+
+            strokeWeight(random(1, 3));
+            
+            curve(
+                controlX1,
+                controlY1,
+                anchorX1,
+                anchorY1,
+                anchorX2,
+                anchorY2,
+                controlX2,
+                controlY2
+            );
+
+            strokeWeight(1);
+        }
+    }
+
+    decoratePoint(pointX, pointY, passes = 5) {
+        for (let i = 0; i < passes; i++) {
+            strokeWeight(random(1, 4));
+            circle(pointX + random(-25, 25), pointY + random(-25, 25), random(5, 15));
+            strokeWeight(1);
+        }
     }
 
     buildCloudFrame(showFrame = false) {
