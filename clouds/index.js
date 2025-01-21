@@ -5,7 +5,9 @@
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    new Cloud(150, 750, 500, 500, 10, 0.2).render();
+    new Cloud(400, 1000, 500, 500, 20, 0.3).render();
+    new Cloud(100, 1300, 450, 500, 30, 0.5).render();
+    new Cloud(800, 1300, 1000, 1000, 10, 0.1).render();
 }
 
 class Cloud {
@@ -16,6 +18,7 @@ class Cloud {
     #pivotSteps;
     #pivotExtreme;
     #pivotPointCoords;
+    #centerPointCoords;
 
     constructor(xStart, xEnd, yStart, yEnd, pivotSteps, pivotExtreme) {
         /**
@@ -30,16 +33,17 @@ class Cloud {
         this.#pivotSteps = pivotSteps;
         this.#pivotExtreme = pivotExtreme > 1 ? 1 : pivotExtreme;
         this.#pivotPointCoords = [];
+        this.#centerPointCoords = [];
     }
 
     render() {
-        // this.buildCloudFrame();
-        // this.drawBaseLayer();
-        this.decorateSegment(...[windowWidth / 2, windowHeight / 2], ...[windowWidth / 2 + 500, windowHeight / 2]);
+        this.buildCloudFrame();
+        this.drawBaseLayer();
+        // this.decorateSegment(...[windowWidth / 2, windowHeight / 2], ...[windowWidth / 2 + 200, windowHeight / 2]);
     }
 
     drawBaseLayer() {
-        const steps = random(1, 5);
+        const steps = random(1, 3);
 
         this.#pivotPointCoords.forEach((point, i) => {
             // noFill();
@@ -50,74 +54,84 @@ class Cloud {
             let nextPoint = this.#pivotPointCoords[i + 1];
 
             if (nextPoint) {
-                const arcWidth = Math.ceil(dist(...point, ...nextPoint) / steps);
+                // const arcWidth = Math.ceil(dist(...point, ...nextPoint) / steps);
 
-                const stepX = (nextPoint[0] - point[0]) / steps;
-                const stepY = (nextPoint[1] - point[1]) / steps;
+                // const stepX = (nextPoint[0] - point[0]) / steps;
+                // const stepY = (nextPoint[1] - point[1]) / steps;
 
                 let startX = point[0];
                 let startY = point[1];
 
-                let prevRadian = PI;
-                let nextRadian = this.calculateRadians(point[0], point[1], nextPoint[0], nextPoint[1]);
+                // let prevRadian = PI;
+                // let nextRadian = this.calculateRadians(point[0], point[1], nextPoint[0], nextPoint[1]);
+                
+                this.decorateSegment(startX, startY, nextPoint[0], nextPoint[1]);
+                this.decorateSegment(startX + random(-20, 20), startY + random(-20, 20), nextPoint[0] + random(-20, 20), nextPoint[1] + random(-20, 20));
+                
+                // for (let i = 0; i < steps; i++) {
+                //     const arcCenterX = startX + (stepX / 2);
+                //     const arcCenterY = startY + (stepY / 2);
 
-                for (let i = 0; i < steps; i++) {
-                    const arcCenterX = startX + (stepX / 2);
-                    const arcCenterY = startY + (stepY / 2);
+                //     // curve(
+                //     //     startX,
+                //     //     startY,
+                //     //     startX + random(10, 50),
+                //     //     startY - random(10, 50),
+                //     //     (startX + stepX) - random(10, 50),
+                //     //     (startY + stepY) - random(10, 50),
+                //     //     startX + stepX,
+                //     //     startY + stepY,
+                //     // );
 
-                    // curve(
-                    //     startX,
-                    //     startY,
-                    //     startX + random(10, 50),
-                    //     startY - random(10, 50),
-                    //     (startX + stepX) - random(10, 50),
-                    //     (startY + stepY) - random(10, 50),
-                    //     startX + stepX,
-                    //     startY + stepY,
-                    // );
+                //     // circle(arcCenterX, arcCenterY, arcWidth);
 
-                    // circle(arcCenterX, arcCenterY, arcWidth);
-
-                    // main arc
-                    arc(arcCenterX, arcCenterY, arcWidth, arcWidth, nextRadian + PI, nextRadian);
+                //     // main arc
+                //     arc(arcCenterX, arcCenterY, arcWidth, arcWidth, nextRadian + PI, nextRadian);
                     
-                    // draw some accent arcs
-                    // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
-                    // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
-                    // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
+                //     // draw some accent arcs
+                //     // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
+                //     // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
+                //     // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
 
-                    startX += stepX;
-                    startY += stepY;
-                }
+                //     startX += stepX;
+                //     startY += stepY;
+                // }
 
-                prevRadian = PI;
+                // prevRadian = PI;
             }
         });
     }
 
     decorateSegment(x1, y1, x2, y2) {
-        const bumps = 10;
+        const bumps = random(1, 20);
 
-        line(x1, y1, x2, y2);
+        // line(x1, y1, x2, y2);
 
-        this.decoratePoint(x1, y1);
-        this.decoratePoint(x2, y2);
+        if (random(-1, 1) < 0) {
+            this.decoratePoint(x1, y1, random(0, 10));
+        }
+
+        // this.decoratePoint(x2, y2);
 
         for (let i = 0; i < bumps; i++) {
             const xQuarter = (x2 - x1) / 4;
             const yQuarter = (y2 - y1) / 4;
 
-            const anchorX1 = random(x1, x1 + xQuarter);
-            const anchorY1 = random(y1, y1 + yQuarter);
-            const anchorX2 = random(x2 - xQuarter, x2);
-            const anchorY2 = random(y2 - yQuarter, y2);
+            const anchorX1 = random(x1, x1 + xQuarter) + random(-20, 10);
+            const anchorY1 = random(y1, y1 + yQuarter) + random(-10, 10);
+            const anchorX2 = random(x2 - xQuarter, x2) + random(-10, 10);
+            const anchorY2 = random(y2 - yQuarter, y2) + random(-10, 10);
 
-            const controlX1 = anchorX1 + random(10, 200);
-            const controlY1 = anchorY1 + random(10, 200);
-            const controlX2 = anchorX2 + random(10, 200);
-            const controlY2 = anchorY2 + random(10, 200);
+            const controlX1 = this.#centerPointCoords[0] + random(-20, 20);
+            const controlY1 = this.#centerPointCoords[1] + random(-20, 20);
+            const controlX2 = this.#centerPointCoords[0] + random(-20, 20);
+            const controlY2 = this.#centerPointCoords[1] + random(-20, 20);
+            // const controlX1 = anchorX1 + random(10, 200);
+            // const controlY1 = anchorY1 + random(10, 200);
+            // const controlX2 = anchorX2 + random(10, 200);
+            // const controlY2 = anchorY2 + random(10, 200);
 
-            strokeWeight(random(1, 3));
+            strokeWeight(random(0, 3));
             
             curve(
                 controlX1,
@@ -137,7 +151,8 @@ class Cloud {
     decoratePoint(pointX, pointY, passes = 5) {
         for (let i = 0; i < passes; i++) {
             strokeWeight(random(1, 4));
-            circle(pointX + random(-25, 25), pointY + random(-25, 25), random(5, 15));
+            arc(pointX, pointY, random(1, 10), random(1, 10), random(0, PI), random(0, PI));
+            // circle(pointX + random(-25, 25), pointY + random(-25, 25), random(1, 8));
             strokeWeight(1);
         }
     }
@@ -149,6 +164,13 @@ class Cloud {
 
         const topPivotPoints = [];
         const bottomPivotPoints = [];
+
+        this.#centerPointCoords = [
+            this.#xStart + ((this.#xEnd - this.#xStart) / 2),
+            this.#yStart + ((this.#yEnd - this.#yStart) / 2),
+        ];
+
+        // circle(this.#centerPointCoords[0], this.#centerPointCoords[1], 10);
 
         const drawCloudEdge = dir => {
             let nextX = this.#xStart;
@@ -164,7 +186,8 @@ class Cloud {
                 if (dir == 'top') {
                     y = this.#yStart - noiseLevel * noise(nx);
                 } else {
-                    y = this.#yStart + noiseLevel * noise(nx)
+                    // y = this.#yStart + noiseLevel * noise(nx)
+                    y = this.#yStart + random(50, 125) * noise(nx)
                 }
                 
                 if (showFrame) {
