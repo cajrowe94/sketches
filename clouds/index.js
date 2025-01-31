@@ -5,9 +5,115 @@
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    new Cloud(400, 1000, 500, 500, 20, 0.3).render();
-    new Cloud(100, 1300, 450, 500, 30, 0.5).render();
-    new Cloud(800, 1300, 1000, 1000, 10, 0.1).render();
+    const outerX = (windowWidth / 2) - random(100, 300);
+    const outerY = (windowHeight / 2) - random(100, 300);
+    const outerWidth = (windowHeight / 2) + random(50, 200);
+    // const outerWidth = random(100, 400);
+    const outerHeight = (windowHeight / 2) + random(50, 200);
+    // const outerHeight = random(100, 400);
+
+    // drawSun();
+    drawBackground(outerX, outerY, outerWidth, outerHeight);
+
+    for (var i = 0; i < 3; i++) {
+        let cloudY = random(outerY, outerY + outerHeight);
+
+        new Cloud(
+            outerX + random(0, 200),
+            (outerX + outerWidth) - random(0, 200),
+            cloudY,
+            cloudY,
+            10,
+            0.2
+        ).render();
+    }
+    
+    // new Cloud(400, 1000, 500, 500, 20, 0.3).render();
+    // new Cloud(100, 1300, 450, 500, 30, 0.5).render();
+    // new Cloud(800, 1300, 1000, 1000, 10, 0.1).render();
+}
+
+function drawBackground(outerX, outerY, outerWidth, outerHeight) {
+    stroke(1);
+    strokeWeight(2);
+    fill(1);
+    rect(outerX, outerY, outerWidth, outerHeight);
+
+    // diagonal
+    for (var i = outerX; i < (outerX + outerWidth); i += 10) {
+        strokeWeight(random(1, 3));
+        stroke(random(1, 225));
+
+        let randomMax = 100;
+
+        line(
+            i + random(-randomMax, randomMax),
+            outerY + random(-randomMax, randomMax),
+            outerX + random(-randomMax, randomMax),
+            i + random(-randomMax, randomMax)
+        );
+    }
+
+    for (var i = outerX + outerWidth; i > outerX; i -= 10) {
+        strokeWeight(random(1, 3));
+        stroke(random(1, 225));
+
+        let randomMax = 100;
+
+        line(
+            i + random(-randomMax, randomMax),
+            (outerY + outerHeight) + random(-randomMax, randomMax),
+            (outerX + outerWidth) + random(-randomMax, randomMax),
+            i + random(-randomMax, randomMax)
+        );
+    }
+
+    for (var i = outerX; i < (outerX + outerWidth); i += 1) {
+        strokeWeight(random(1, 3));
+        stroke(255);
+
+        let randomMax = 100;
+
+        line(
+            i + random(-randomMax, randomMax),
+            outerY + random(-randomMax, randomMax),
+            outerX + random(-randomMax, randomMax),
+            i + random(-randomMax, randomMax)
+        );
+    }
+
+    for (var i = outerX + outerWidth; i > outerX; i -= 1) {
+        strokeWeight(random(1, 3));
+        stroke(255);
+
+        let randomMax = 100;
+
+        line(
+            i + random(-randomMax, randomMax),
+            (outerY + outerHeight) + random(-randomMax, randomMax),
+            (outerX + outerWidth) + random(-randomMax, randomMax),
+            i + random(-randomMax, randomMax)
+        );
+    }
+
+    // stroke(1);
+    strokeWeight(2);
+    fill(255);
+    rect(outerX + random(50, 100), outerY + random(50, 100), outerWidth - random(50, 100), outerHeight - random(50, 100));
+
+    // for (var i = outerX; i < (outerX + outerWidth) + 200; i+=2) {
+    //     strokeWeight(random(1, 3));
+    //     stroke(255);
+    //     let randomMax = 100;
+
+    //     line(
+    //         i + random(-randomMax, randomMax),
+    //         outerY + random(-randomMax, randomMax),
+    //         outerX + random(-randomMax, randomMax),
+    //         i + random(-randomMax, randomMax)
+    //     );
+    // }
+
 }
 
 class Cloud {
@@ -108,7 +214,7 @@ class Cloud {
         // line(x1, y1, x2, y2);
 
         if (random(-1, 1) < 0) {
-            this.decoratePoint(x1, y1, random(0, 10));
+            this.decoratePoint(x1, y1, random(1, 10));
         }
 
         // this.decoratePoint(x2, y2);
@@ -131,7 +237,9 @@ class Cloud {
             // const controlX2 = anchorX2 + random(10, 200);
             // const controlY2 = anchorY2 + random(10, 200);
 
+            fill(255);
             strokeWeight(random(0, 3));
+            stroke(random(1, 75));
             
             curve(
                 controlX1,
@@ -150,8 +258,17 @@ class Cloud {
 
     decoratePoint(pointX, pointY, passes = 5) {
         for (let i = 0; i < passes; i++) {
-            strokeWeight(random(1, 4));
-            arc(pointX, pointY, random(1, 10), random(1, 10), random(0, PI), random(0, PI));
+            strokeWeight(random(1, 2));
+            stroke(random(1, 200));
+
+            arc(
+                pointX + random(-100, 100),
+                pointY - random(1, 100),
+                random(1, 5),
+                random(1, 5),
+                random(0, PI),
+                random(0, PI)
+            );
             // circle(pointX + random(-25, 25), pointY + random(-25, 25), random(1, 8));
             strokeWeight(1);
         }
