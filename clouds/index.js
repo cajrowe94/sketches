@@ -12,8 +12,9 @@ function setup() {
     const outerHeight = (windowHeight / 2) + random(50, 200);
     // const outerHeight = random(100, 400);
 
-    // drawSun();
-    drawBackground(outerX, outerY, outerWidth, outerHeight);
+    // drawSunFullScreen();
+    drawSunBoxed();
+    // drawBackground(outerX, outerY, outerWidth, outerHeight);
 
     for (var i = 0; i < 3; i++) {
         let cloudY = random(outerY, outerY + outerHeight);
@@ -24,13 +25,168 @@ function setup() {
             cloudY,
             cloudY,
             10,
-            0.2
+            0.3
         ).render();
     }
     
     // new Cloud(400, 1000, 500, 500, 20, 0.3).render();
     // new Cloud(100, 1300, 450, 500, 30, 0.5).render();
     // new Cloud(800, 1300, 1000, 1000, 10, 0.1).render();
+}
+
+function drawSunBoxed() {
+    const boxX = windowWidth / 4;
+    const boxY = windowHeight / 4;
+    const boxWidth = windowWidth / 2;
+    const boxHeight = windowHeight / 2;
+    
+    stroke(1);
+    strokeWeight(5);
+    rect(
+        boxX,
+        boxY,
+        boxWidth,
+        boxHeight,
+    );
+
+    const width = random(50, 150);
+    const radius = width / 2;
+
+    const centerX = random(boxX, (boxX + boxWidth));
+    const centerY = random(boxY, (boxY + boxHeight));
+
+    // let prevCoords;
+
+    // dark lines
+    for (var i = 0; i < 2000; i++) {
+        strokeWeight(random(1, 1));
+        stroke(1);
+
+        line(
+            centerX,
+            centerY,
+            random(boxX, (boxX + boxWidth)),
+            random(boxY, (boxY + boxHeight)),
+        );
+    }
+
+    // light lines
+    for (var i = 0; i < 1000; i++) {
+        strokeWeight(random(1, 1));
+        stroke(255);
+
+        line(
+            centerX,
+            centerY,
+            random(boxX, (boxX + boxWidth)),
+            random(boxY, (boxY + boxHeight)),
+        );
+    }
+
+    // circles
+    for (var i = 0; i < 300; i++) {
+        fill(1);
+        strokeWeight(1);
+        stroke(1);
+        
+        const randomPoint = getRandomPointOnCircle(centerX, centerY, radius);
+        circle(randomPoint[0], randomPoint[1], random(10, 20));
+        
+        fill(random(100, 255));
+        stroke(255);
+        const rogueX = randomPoint[0] + random(-150, 150);
+        const rogueY = randomPoint[1] + random(-150, 150);
+        circle(rogueX, rogueY, random(1, 6));
+        
+        // if (prevCoords) {
+        //     line(prevCoords[0], prevCoords[1], rogueX, rogueY);
+        // }
+
+        // prevCoords = [rogueX, rogueY];
+    }
+
+    fill(1);
+    stroke(1);
+    
+    circle(
+        centerX,
+        centerY,
+        width
+    );
+}
+
+function drawSunFullScreen() {
+    const width = random(50, 150);
+    const radius = width / 2;
+
+    const centerX = random(radius, (windowWidth - radius));
+    const centerY = random(radius, (windowHeight - radius));
+
+    // let prevCoords;
+
+    // dark lines
+    for (var i = 0; i < 1000; i++) {
+        strokeWeight(random(1, 3));
+        stroke(1);
+
+        line(
+            centerX,
+            centerY,
+            random(0, windowWidth),
+            random(0, windowHeight),
+        );
+    }
+
+    // light lines
+    for (var i = 0; i < 1500; i++) {
+        strokeWeight(random(1, 3));
+        stroke(255);
+
+        line(
+            centerX,
+            centerY,
+            random(0, windowWidth),
+            random(0, windowHeight),
+        );
+    }
+
+    // circles
+    for (var i = 0; i < 300; i++) {
+        fill(1);
+        strokeWeight(1);
+        stroke(1);
+        
+        const randomPoint = getRandomPointOnCircle(centerX, centerY, radius);
+        circle(randomPoint[0], randomPoint[1], random(10, 20));
+        
+        fill(random(100, 255));
+        stroke(255);
+        const rogueX = randomPoint[0] + random(-150, 150);
+        const rogueY = randomPoint[1] + random(-150, 150);
+        circle(rogueX, rogueY, random(1, 6));
+        
+        // if (prevCoords) {
+        //     line(prevCoords[0], prevCoords[1], rogueX, rogueY);
+        // }
+
+        // prevCoords = [rogueX, rogueY];
+    }
+
+    fill(1);
+    stroke(1);
+    
+    circle(
+        centerX,
+        centerY,
+        width
+    );
+}
+
+function getRandomPointOnCircle(centerX, centerY, radius) {
+    const angle = Math.random() * 2 * Math.PI;
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
+    return [x, y];
 }
 
 function drawBackground(outerX, outerY, outerWidth, outerHeight) {
@@ -121,6 +277,8 @@ class Cloud {
     #xEnd;
     #yStart;
     #yEnd;
+    #yMin;
+    #yMax;
     #pivotSteps;
     #pivotExtreme;
     #pivotPointCoords;
@@ -136,6 +294,8 @@ class Cloud {
         this.#xEnd = xEnd;
         this.#yStart = yStart;
         this.#yEnd = yEnd;
+        this.#yMin = yStart;
+        this.#yMax = yStart;
         this.#pivotSteps = pivotSteps;
         this.#pivotExtreme = pivotExtreme > 1 ? 1 : pivotExtreme;
         this.#pivotPointCoords = [];
@@ -145,10 +305,24 @@ class Cloud {
     render() {
         this.buildCloudFrame();
         this.drawBaseLayer();
+        this.drawOuterEdge();
         // this.decorateSegment(...[windowWidth / 2, windowHeight / 2], ...[windowWidth / 2 + 200, windowHeight / 2]);
     }
 
     drawBaseLayer() {
+        fill(255);
+        stroke(255);
+
+        for (var i = 0; i < 400; i++) {
+            circle(
+                random(this.#xStart, this.#xEnd),
+                random(this.#yMin, this.#yMax),
+                random(10, 55)
+            );
+        }
+    }
+
+    drawOuterEdge() {
         const steps = random(1, 3);
 
         this.#pivotPointCoords.forEach((point, i) => {
@@ -321,6 +495,14 @@ class Cloud {
                     bottomPivotPoints.unshift([nextX, nextY]);
                 }
             }
+
+            if (nextY > this.#yMax) {
+                this.#yMax = nextY;
+            }
+
+            if (nextY < this.#yMin) {
+                this.#yMin = nextY;
+            }
             
             if (showFrame) {
                 circle(nextX, nextY, 10);
@@ -346,6 +528,9 @@ class Cloud {
         if (showFrame) {
             line(this.#xStart, this.#yStart, this.#xEnd, this.#yEnd);
         }
+
+        console.log('y min: ', this.#yMin);
+        console.log('y max: ', this.#yMax);
     }
 
     calculateRadians(x1, y1, x2, y2) {
