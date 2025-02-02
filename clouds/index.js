@@ -8,9 +8,7 @@ function setup() {
     const outerX = (windowWidth / 2) - random(100, 300);
     const outerY = (windowHeight / 2) - random(100, 300);
     const outerWidth = (windowHeight / 2) + random(50, 200);
-    // const outerWidth = random(100, 400);
     const outerHeight = (windowHeight / 2) + random(50, 200);
-    // const outerHeight = random(100, 400);
 
     // drawSunFullScreen();
     drawSunBoxed();
@@ -28,10 +26,6 @@ function setup() {
             0.3
         ).render();
     }
-    
-    // new Cloud(400, 1000, 500, 500, 20, 0.3).render();
-    // new Cloud(100, 1300, 450, 500, 30, 0.5).render();
-    // new Cloud(800, 1300, 1000, 1000, 10, 0.1).render();
 }
 
 function drawSunBoxed() {
@@ -97,12 +91,6 @@ function drawSunBoxed() {
         const rogueX = randomPoint[0] + random(-150, 150);
         const rogueY = randomPoint[1] + random(-150, 150);
         circle(rogueX, rogueY, random(1, 6));
-        
-        // if (prevCoords) {
-        //     line(prevCoords[0], prevCoords[1], rogueX, rogueY);
-        // }
-
-        // prevCoords = [rogueX, rogueY];
     }
 
     fill(1);
@@ -164,12 +152,6 @@ function drawSunFullScreen() {
         const rogueX = randomPoint[0] + random(-150, 150);
         const rogueY = randomPoint[1] + random(-150, 150);
         circle(rogueX, rogueY, random(1, 6));
-        
-        // if (prevCoords) {
-        //     line(prevCoords[0], prevCoords[1], rogueX, rogueY);
-        // }
-
-        // prevCoords = [rogueX, rogueY];
     }
 
     fill(1);
@@ -257,19 +239,6 @@ function drawBackground(outerX, outerY, outerWidth, outerHeight) {
     fill(255);
     rect(outerX + random(50, 100), outerY + random(50, 100), outerWidth - random(50, 100), outerHeight - random(50, 100));
 
-    // for (var i = outerX; i < (outerX + outerWidth) + 200; i+=2) {
-    //     strokeWeight(random(1, 3));
-    //     stroke(255);
-    //     let randomMax = 100;
-
-    //     line(
-    //         i + random(-randomMax, randomMax),
-    //         outerY + random(-randomMax, randomMax),
-    //         outerX + random(-randomMax, randomMax),
-    //         i + random(-randomMax, randomMax)
-    //     );
-    // }
-
 }
 
 class Cloud {
@@ -326,58 +295,14 @@ class Cloud {
         const steps = random(1, 3);
 
         this.#pivotPointCoords.forEach((point, i) => {
-            // noFill();
-            // fill(random(250, 255));
-            // stroke(random(0, 20));
-            // strokeWeight(random(0.2, 1));
-
             let nextPoint = this.#pivotPointCoords[i + 1];
 
             if (nextPoint) {
-                // const arcWidth = Math.ceil(dist(...point, ...nextPoint) / steps);
-
-                // const stepX = (nextPoint[0] - point[0]) / steps;
-                // const stepY = (nextPoint[1] - point[1]) / steps;
-
                 let startX = point[0];
                 let startY = point[1];
-
-                // let prevRadian = PI;
-                // let nextRadian = this.calculateRadians(point[0], point[1], nextPoint[0], nextPoint[1]);
                 
                 this.decorateSegment(startX, startY, nextPoint[0], nextPoint[1]);
                 this.decorateSegment(startX + random(-20, 20), startY + random(-20, 20), nextPoint[0] + random(-20, 20), nextPoint[1] + random(-20, 20));
-                
-                // for (let i = 0; i < steps; i++) {
-                //     const arcCenterX = startX + (stepX / 2);
-                //     const arcCenterY = startY + (stepY / 2);
-
-                //     // curve(
-                //     //     startX,
-                //     //     startY,
-                //     //     startX + random(10, 50),
-                //     //     startY - random(10, 50),
-                //     //     (startX + stepX) - random(10, 50),
-                //     //     (startY + stepY) - random(10, 50),
-                //     //     startX + stepX,
-                //     //     startY + stepY,
-                //     // );
-
-                //     // circle(arcCenterX, arcCenterY, arcWidth);
-
-                //     // main arc
-                //     arc(arcCenterX, arcCenterY, arcWidth, arcWidth, nextRadian + PI, nextRadian);
-                    
-                //     // draw some accent arcs
-                //     // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
-                //     // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
-                //     // arc(arcCenterX, arcCenterY, arcWidth - random(5, arcWidth - 5), arcWidth - random(5, arcWidth - 5), nextRadian + PI, nextRadian);
-
-                //     startX += stepX;
-                //     startY += stepY;
-                // }
-
-                // prevRadian = PI;
             }
         });
     }
@@ -385,13 +310,9 @@ class Cloud {
     decorateSegment(x1, y1, x2, y2) {
         const bumps = random(1, 20);
 
-        // line(x1, y1, x2, y2);
-
         if (random(-1, 1) < 0) {
             this.decoratePoint(x1, y1, random(1, 10));
         }
-
-        // this.decoratePoint(x2, y2);
 
         for (let i = 0; i < bumps; i++) {
             const xQuarter = (x2 - x1) / 4;
@@ -406,10 +327,6 @@ class Cloud {
             const controlY1 = this.#centerPointCoords[1] + random(-20, 20);
             const controlX2 = this.#centerPointCoords[0] + random(-20, 20);
             const controlY2 = this.#centerPointCoords[1] + random(-20, 20);
-            // const controlX1 = anchorX1 + random(10, 200);
-            // const controlY1 = anchorY1 + random(10, 200);
-            // const controlX2 = anchorX2 + random(10, 200);
-            // const controlY2 = anchorY2 + random(10, 200);
 
             fill(255);
             strokeWeight(random(0, 3));
@@ -443,7 +360,7 @@ class Cloud {
                 random(0, PI),
                 random(0, PI)
             );
-            // circle(pointX + random(-25, 25), pointY + random(-25, 25), random(1, 8));
+
             strokeWeight(1);
         }
     }
@@ -460,8 +377,6 @@ class Cloud {
             this.#xStart + ((this.#xEnd - this.#xStart) / 2),
             this.#yStart + ((this.#yEnd - this.#yStart) / 2),
         ];
-
-        // circle(this.#centerPointCoords[0], this.#centerPointCoords[1], 10);
 
         const drawCloudEdge = dir => {
             let nextX = this.#xStart;
